@@ -56,7 +56,7 @@ def plot_anhysteretic(axes, Hmin, Hmax, Ms, a, alpha):
     axes.plot(H, M/Ms)
 
 
-def anhysteretic_test():
+def anhysteretic_test1():
     Ms = 1.6e6
     a = 1100
     alphas = [0, 0.8e-3, 1.6e-3]
@@ -73,7 +73,26 @@ def anhysteretic_test():
     ax.legend(['alpha=0.0e-3', 'alpha=0.8e-3', 'alpha=1.6e-3'])
     plt.grid()
     plt.show()
+    
+
+def anhysteretic_test2():
+    Ms = 1.6e6
+    a_s = [1100, 2200, 3300]
+    alpha = 1.6e-3
+    Hmin = -5000
+    Hmax = 5000
+    fig, ax = plt.subplots()
+    for a in a_s:
+        plot_anhysteretic(ax, Hmin, Hmax, Ms, a, alpha)
+    ax.set_xlim([Hmin, Hmax])
+    ax.set_ylim([-1, 1])
+    ax.set_xlabel('H (A/m)')
+    ax.set_ylabel('M/Ms')
+    ax.set_title('Anhysteretic Magnetization\nMs=1.6e6 A/m, alpha=1.6e-3')
+    ax.legend(['a=1100 A/m', 'a=2200 A/m', 'a=3300 A/m'])
+    plt.grid()
+    plt.show()
 
 
 if __name__ == '__main__':
-    anhysteretic_test()
+    anhysteretic_test2()
