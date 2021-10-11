@@ -29,15 +29,15 @@ def dMdH(M, H, Ms, a, alpha, k, c, delta):
     He = H + alpha*M
     Man = Ms*L(He/a)
     dM = Man - M
-    dMdH_num = (1-c)*dM / (delta*k - alpha*dM) + c*Ms/a*dLdx(He/a)
-    dMdH_den = 1 - c*alpha*Ms/a*dLdx(He/a)
+    dMdH_num = dM / (delta*k - alpha*dM) + c*Ms/a*dLdx(He/a)
+    dMdH_den = (1+c)*(1 - c*alpha*Ms/a*dLdx(He/a))
     return dMdH_num / dMdH_den
 
 
 def euler(dMdH, M0, H):
     # Euler ODE integrator
     M = [M0]
-    for i in range(len(t)-1):
+    for i in range(len(H)-1):
         dH_i = H[i+1] - H[i]
         dMdH_i = dMdH(M[i], H[i+1], delta=np.sign(dH_i))
         M.append(M[i] + dMdH_i*dH_i)
@@ -60,3 +60,43 @@ def H_arr(Hlimit, curve_type):
     else:
         print('Invalid curve type')
     return H
+
+
+def test1():
+    # Initializate parameters
+    Hmin = 0
+    Hmax = 5000
+    Ms = 1.6e6
+    a = 1100
+    alpha = 1.6e-3
+    k = 400
+    c = 0.2
+    delta = 1
+    # Setup and solve model
+    H = np.linspace(Hmin, Hmax, 1000)
+    M0 = 0
+    dydt = partial(dMdH, Ms=Ms, a=a, alpha=alpha, k=k, c=c, delta=delta)
+    M = np.array(euler(dydt, M0, H))
+    plt.plot(H, M/Ms)
+    plt.show()
+
+
+
+def test2():
+    # Initializate parameters
+    Hmax = 5000
+    Ms = 1.6e6
+    a = 1100
+    alpha = 1.6e-3
+    k = 400
+    c = 0.2
+    # Setup and solve model
+    H = H_arr(Hmax, curve_type='full')
+    M0 = 0
+    dydt = partial(dMdH, Ms=Ms, a=a, alpha=alpha, k=k, c=c)
+    M = np.array(euler(dydt, M0, H))
+    plt.plot(H, M/Ms)
+    plt.show()
+
+    
+test2()
